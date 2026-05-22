@@ -100,26 +100,31 @@ if uploaded_file is not None:
     # ─── Downloads ───
     st.markdown("### 📥 Exportar Dados")
 
-    pasta_downloads = Path.home() / "Downloads"
     nome_base = f"plano_contas_{info['cnpj'].replace('/', '_').replace('.', '').replace('-', '')}_{datetime.now().strftime('%Y%m%d')}"
 
     dl1, dl2, _ = st.columns([1, 1, 2])
 
     with dl1:
-        if st.button("⬇️ Salvar Excel (.xlsx)", use_container_width=True, type="primary"):
-            caminho_xlsx = pasta_downloads / f"{nome_base}.xlsx"
-            excel_data = gerar_excel(df_filtrado)
-            with open(caminho_xlsx, "wb") as f:
-                f.write(excel_data)
-            st.success(f"✅ Salvo em: {caminho_xlsx}")
+        excel_data = gerar_excel(df_filtrado)
+        st.download_button(
+            label="⬇️ Baixar Excel (.xlsx)",
+            data=excel_data,
+            file_name=f"{nome_base}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            use_container_width=True,
+            type="primary"
+        )
 
     with dl2:
-        if st.button("⬇️ Salvar CSV (.csv)", use_container_width=True, type="primary"):
-            caminho_csv = pasta_downloads / f"{nome_base}.csv"
-            csv_data = gerar_csv(df_filtrado)
-            with open(caminho_csv, "wb") as f:
-                f.write(csv_data)
-            st.success(f"✅ Salvo em: {caminho_csv}")
+        csv_data = gerar_csv(df_filtrado)
+        st.download_button(
+            label="⬇️ Baixar CSV (.csv)",
+            data=csv_data,
+            file_name=f"{nome_base}.csv",
+            mime="text/csv",
+            use_container_width=True,
+            type="primary"
+        )
 
 else:
     renderizar_estado_vazio()
