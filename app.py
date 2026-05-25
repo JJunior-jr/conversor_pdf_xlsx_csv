@@ -98,7 +98,7 @@ if uploaded_file is not None:
     st.markdown(f"### 📋 Plano de Contas ({len(df_filtrado)} registros)")
     st.dataframe(
         df_filtrado,
-        use_container_width=True,
+        width="stretch",
         height=500,
         column_config={
             "Código": st.column_config.TextColumn("Código", width="small"),
@@ -122,7 +122,7 @@ if uploaded_file is not None:
             data=excel_data,
             file_name=f"{nome_base}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True,
+            width="stretch",
             type="primary"
         )
         del excel_data
@@ -135,7 +135,7 @@ if uploaded_file is not None:
             data=csv_data,
             file_name=f"{nome_base}.csv",
             mime="text/csv",
-            use_container_width=True,
+            width="stretch",
             type="primary"
         )
         del csv_data
