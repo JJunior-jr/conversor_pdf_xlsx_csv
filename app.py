@@ -8,6 +8,7 @@ Execução: streamlit run app.py
 import streamlit as st
 import pdfplumber
 import pandas as pd
+import gc
 from pathlib import Path
 from datetime import datetime
 
@@ -30,6 +31,14 @@ renderizar_cabecalho()
 # ─── Sidebar (upload do arquivo) ───
 uploaded_file = renderizar_sidebar()
 
+# Limite sugerido: 15 MB
+LIMITE_MB = 15
+if uploaded_file is not None:
+    tamanho_mb = uploaded_file.size / (1024 * 1024)
+    if tamanho_mb > LIMITE_MB:
+        st.error(f"❌ O arquivo enviado possui {tamanho_mb:.1f} MB, o que excede o limite de {LIMITE_MB} MB permitido para evitar falta de memória na nuvem. Divida o PDF ou utilize um menor.")
+        uploaded_file = None
+
 # ─── Processamento ───
 if uploaded_file is not None:
     with st.spinner("🔄 Processando PDF... Aguarde."):
@@ -44,6 +53,8 @@ if uploaded_file is not None:
         pdf.close()
 
         df = pd.DataFrame(contas)
+        del contas
+        gc.collect()
 
     # ─── Informações da Entidade ───
     renderizar_info_entidade(info)
@@ -114,6 +125,8 @@ if uploaded_file is not None:
             use_container_width=True,
             type="primary"
         )
+        del excel_data
+        gc.collect()
 
     with dl2:
         csv_data = gerar_csv(df_filtrado)
@@ -125,6 +138,8 @@ if uploaded_file is not None:
             use_container_width=True,
             type="primary"
         )
+        del csv_data
+        gc.collect()
 
 else:
     renderizar_estado_vazio()
